@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+.env
+venv/
+.venv/
+
+# Flutter (Frontend)
+frontend/build/
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/.pub-cache/
+frontend/pubspec.lock
+frontend/windows/runner/Release/
+frontend/windows/runner/Debug/
+
+
+# Embedded Python
+python/
+Lib/
+Scripts/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+Thumbs.db
+.DS_Store
