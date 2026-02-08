@@ -6,7 +6,6 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 
@@ -49,7 +48,6 @@ class _BackendLoaderState extends State<BackendLoader> {
     
     _listener = AppLifecycleListener(
       onExitRequested: () async {
-        _backendProcess?.kill(); 
         return AppExitResponse.exit;
       },
     );
@@ -60,7 +58,6 @@ class _BackendLoaderState extends State<BackendLoader> {
   @override
   void dispose() {
     _listener.dispose(); 
-    _backendProcess?.kill();
     debugPrint("🛑 Backend stopped");
     super.dispose();
   }
@@ -74,7 +71,6 @@ class _BackendLoaderState extends State<BackendLoader> {
     try {
       const backendDir = r"C:\ThambiAI-main\backend";
       const serverPath = r"C:\ThambiAI-main\backend\server.py";
-
       if (!Directory(backendDir).existsSync()) {
         debugPrint("❌ Backend folder not found");
         return;
@@ -101,7 +97,7 @@ class _BackendLoaderState extends State<BackendLoader> {
     if (mounted) setState(() => _showRetry = false);
     
     int attempts = 0;
-    const int maxAttempts = 8; // Try for 8 seconds
+    const int maxAttempts = 15; // Try for 8 seconds
 
     while (!_connected && attempts < maxAttempts) {
       try {
@@ -192,58 +188,6 @@ class MainDashboard extends StatefulWidget {
   State<MainDashboard> createState() => _MainDashboardState();
 }
 
-class SoundWave extends StatefulWidget {
-  const SoundWave({super.key});
-  @override
-  State<SoundWave> createState() => _SoundWaveState();
-}
-
-class _SoundWaveState extends State<SoundWave> with TickerProviderStateMixin {
-  late List<AnimationController> _controllers;
-  late List<Animation<double>> _animations;
-  final int _barCount = 5;
-
-  @override
-  void initState() {
-    super.initState();
-    _controllers = List.generate(
-      _barCount,
-      (index) => AnimationController(
-        duration: Duration(milliseconds: 400 + (index * 100)),
-        vsync: this,
-      )..repeat(reverse: true),
-    );
-    _animations = _controllers.map((c) => Tween<double>(begin: 5, end: 25).animate(c)).toList();
-  }
-
-  @override
-  void dispose() {
-    for (var c in _controllers) { c.dispose(); }
-    _backendProcess?.kill();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(_barCount, (i) {
-        return AnimatedBuilder(
-          animation: _animations[i],
-          builder: (context, child) {
-            return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 2),
-              width: 3,
-              height: _animations[i].value,
-              decoration: BoxDecoration(color: Colors.tealAccent, borderRadius: BorderRadius.circular(2)),
-            );
-          },
-        );
-      }),
-    );
-  }
-}
-
 class HoverBubble extends StatefulWidget {
   final Widget child;
   final VoidCallback onCopy;
@@ -325,16 +269,11 @@ class _MainDashboardState extends State<MainDashboard> {
   bool _isMuted = true;
   // Voice
   final FlutterTts _tts = FlutterTts();
-  final SpeechToText _speech = SpeechToText();
-  bool _isListening = false;
-  bool _speechEnabled = false;
-
 
   @override
     void initState() {
       super.initState(); 
-      _loadSessions();       
-      _initVoice();         
+      _loadSessions();        
     }
 
     @override
@@ -342,73 +281,10 @@ class _MainDashboardState extends State<MainDashboard> {
       _controller.dispose();
       _scrollController.dispose();
       _tts.stop();
-      _speech.stop();
       super.dispose();
     }
 
-  // ---------------- VOICE ----------------
-  void _initVoice() async {
-    try {
-      _speechEnabled = await _speech.initialize(
-        onError: (val) {
-          debugPrint('Mic Error: ${val.errorMsg}');
-          setState(() => _isListening = false);
-        },
-        onStatus: (status) {
-          debugPrint("Speech status: $status");
-          if (status == 'done' || status == 'notListening') {
-            setState(() => _isListening = false);
-          }
-        },
-      );
 
-      if (!_speechEnabled) {
-        debugPrint("❌ Speech permission NOT granted");
-        return;
-      }
-
-      final hasPermission = await _speech.hasPermission;
-      debugPrint("🎤 Mic permission: $hasPermission");
-
-      await _tts.setLanguage("en-IN");
-      await _tts.setPitch(1.0);
-
-      setState(() {});
-    } catch (e) {
-      debugPrint("❌ Mic init failed: $e");
-    }
-  }
-
-  void _toggleListening() async {
-    await _tts.stop();
-
-    if (!_speechEnabled) {
-      _initVoice();
-      return;
-    }
-
-    if (!_isListening) {
-      _controller.clear();
-      setState(() => _isListening = true);
-
-      _speech.listen(
-        localeId: "en_US",
-        onResult: (val) {
-          if (val.recognizedWords.isNotEmpty) {
-            setState(() {
-              _controller.text = val.recognizedWords;
-            });
-          }
-        },
-        listenMode: ListenMode.dictation,
-        partialResults: true,
-      );
-    } else {
-      await _speech.stop();
-      setState(() => _isListening = false);
-    }
-  }
-  
   void _scrollToBottom({bool animated = true}) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -534,7 +410,7 @@ class _MainDashboardState extends State<MainDashboard> {
     cleanText = cleanText.replaceAll(RegExp(r'[#*_~]'), '');
     if (cleanText.trim().isEmpty) return;
     await _tts.setVoice({"name": "en-us-x-iom-network", "locale": "en-US"});
-    await _tts.setSpeechRate(0.9); 
+    await _tts.setSpeechRate(0.85); 
     await _tts.setPitch(1.0);
     await _tts.speak(cleanText);
   }
@@ -633,15 +509,10 @@ Future<void> _deleteSession(String filename) async {
   Future<void> _sendMessage() async {
     final input = _controller.text.trim();
     if (input.isEmpty) return;
-    if (_isListening) {
-      await _speech.stop();
-      _isListening = false;
-    }
     _controller.clear();
     setState(() {
       _messages.add({'sender': 'You', 'message': input});
       _isTyping = true;
-      _isListening = false;
     });
     _scrollToBottom();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -880,10 +751,32 @@ Future<void> _deleteSession(String filename) async {
               const Text("Thambi AI", style: TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(width: 8),
               const Icon(Icons.verified, size: 14, color: Colors.tealAccent),
+              const Spacer(),
+              SizedBox(
+                height: 30,
+                width: 30,
+                child:
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: const Icon(Icons.terminal_rounded, size: 18, color: Colors.redAccent),
+                  onPressed: () {
+                    _backendProcess?.kill();      
+                    if (Platform.isWindows) {
+                       Process.run('taskkill', ['/F', '/IM', 'pythonw.exe', '/T']);
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Backend Killed"),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    );
+                  },
+                  tooltip: "Kill Backend",
+                ),
+              ),
             ],
           ),
         ),
-        // ... (Messages List and Input Area remain same)
         Expanded(
           child: _messages.isEmpty
               ? _buildEmptyState()
@@ -1010,7 +903,6 @@ Widget _buildInputArea() {
           color: hasText ? Colors.tealAccent.withOpacity(0.5) : Colors.white10,
           width: hasText ? 1.5 : 1,
         ),
-        // This creates the "Glow" effect
         boxShadow: hasText ? [
           BoxShadow(
             color: Colors.tealAccent.withOpacity(0.1),
@@ -1021,48 +913,35 @@ Widget _buildInputArea() {
       ),
       child: Row(
         children: [
-          IconButton(
-            icon: Icon(_isListening ? Icons.stop_circle : Icons.mic_none, 
-                 color: _isListening ? Colors.redAccent : Colors.teal),
-            onPressed: _toggleListening,
-          ),
+          // MIC BUTTON REMOVED FROM HERE
+          const SizedBox(width: 15), // Added padding since mic is gone
           Expanded(
-            child: Stack(
-              alignment: Alignment.centerRight,
-              children: [
-                TextField(
-                  controller: _controller,
-                  focusNode: _inputFocusNode,
-                  onChanged: (text) {
-                    if (_isSidebarOpen && text.isNotEmpty) {
-                      setState(() => _isSidebarOpen = false);
-                    }
-                  },
-                  onSubmitted: (_) => _sendMessage(),
-                  decoration: const InputDecoration(
-                    hintText: "Ask Thambi...",
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                  ),
-                ),
-                if (_isListening)
-                  const Padding(
-                    padding: EdgeInsets.only(right: 10),
-                    child: SoundWave(),
-                  ),
-              ],
+            child: TextField(
+              controller: _controller,
+              focusNode: _inputFocusNode,
+              onChanged: (text) {
+                if (_isSidebarOpen && text.isNotEmpty) {
+                  setState(() => _isSidebarOpen = false);
+                }
+              },
+              onSubmitted: (_) => _sendMessage(),
+              decoration: const InputDecoration(
+                hintText: "Ask Thambi...",
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(horizontal: 10),
+              ),
             ),
           ),
-          // Glowing Send Button
+          // SoundWave REMOVED FROM STACK
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: IconButton(
               icon: Icon(
                 Icons.send_rounded, 
-                color: hasText ? Colors.tealAccent : Colors.grey, // Changes color
+                color: hasText ? Colors.tealAccent : Colors.grey,
               ),
-              onPressed: hasText && !_isTyping ? _sendMessage : null,// Disables if empty
-           ),
+              onPressed: hasText && !_isTyping ? _sendMessage : null,
+            ),
           ),
         ],
       ),
