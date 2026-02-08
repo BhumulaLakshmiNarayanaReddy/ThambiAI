@@ -26,7 +26,7 @@ Built using **Flutter (Windows Desktop)** and **Python (Flask)**, it allows user
 
 ## 📌 How to Set Up Thambi AI on Your PC
 
-> 👉 If you face any errors or doubts during setup, feel free to ask ChatGPT.
+> 👉 If you face any errors or doubts during setup, feel free to ask ChatGPT and also remember that the lots of apps are updating everyday. If some features not work change the back end code to make it work.
 
 * * *
 
@@ -105,7 +105,9 @@ Built using **Flutter (Windows Desktop)** and **Python (Flask)**, it allows user
     
 
     GEMINI_API_KEY="your_gemini_api_key_here"
+    
     EMAIL_ADDRESS="your_email @ gmail.com"
+    
     EMAIL_PASSWORD="your_google_app_password"
     
 
@@ -140,5 +142,3 @@ Built using **Flutter (Windows Desktop)** and **Python (Flask)**, it allows user
     
 *   **Platform:** Windows
     
-
-##
