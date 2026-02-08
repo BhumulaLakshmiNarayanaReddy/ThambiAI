@@ -81,7 +81,7 @@ Verify:
 Flutter Windows builds require **Visual Studio Build Tools**, not Android Studio.
 
 Download **Visual Studio 2022 Community**:  
-👉 [https://visualstudio.microsoft.com/downloads/](https://visualstudio.microsoft.com/downloads/)
+👉 [https://aka.ms/vs/16/release/vs_community.exe](https://aka.ms/vs/16/release/vs_community.exe)
 
 During installation, select:
 
