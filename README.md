@@ -1,4 +1,4 @@
-🧠 Thambi AI – Desktop AI Assistant (Windows)
+## 🧠 Thambi AI – Desktop AI Assistant (Windows)
 
 **Thambi AI** is a Windows desktop AI assistant that combines **Google Gemini AI** with local system automation.  
 Built using **Flutter (Windows Desktop)** and **Python (Flask)**, it allows users to interact with AI, control system applications, search files, send emails, and automate daily tasks — all from a single desktop interface.
