@@ -35,23 +35,23 @@ Built using **Flutter (Windows Desktop)** and **Python (Flask)**, it allows user
 ">
  Loading
   <div style="flex: 0 0 auto;">
-    <img src="images/Loading.png" alt="Loading" style="height: 400px; width: auto; display: block;">
+    <img src="images/Loading.png" alt="Loading" style="height: 300px; width: auto; display: block;">
   </div>
 Home Page
   <div style="flex: 0 0 auto;">
-    <img src="images/Home.png" alt="Home" style="height: 400px; width: auto; display: block;">
+    <img src="images/Home.png" alt="Home" style="height: 300px; width: auto; display: block;">
   </div>
 Menu
   <div style="flex: 0 0 auto;">
-    <img src="images/Menu.png" alt="Menu" style="height: 400px; width: auto; display: block;">
+    <img src="images/Menu.png" alt="Menu" style="height: 300px; width: auto; display: block;">
   </div>
 How To Use App
   <div style="flex: 0 0 auto;">
-    <img src="images/How%20to%20use.png" alt="How to Use" style="height: 400px; width: auto; display: block;">
+    <img src="images/How%20to%20use.png" alt="How to Use" style="height: 300px; width: auto; display: block;">
   </div>
 Email
   <div style="flex: 0 0 auto;">
-    <img src="images/Email.png" alt="Email" style="height: 400px; width: auto; display: block;">
+    <img src="images/Email.png" alt="Email" style="height: 300px; width: auto; display: block;">
   </div>
 
 </div>
