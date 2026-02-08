@@ -22,6 +22,41 @@ Built using **Flutter (Windows Desktop)** and **Python (Flask)**, it allows user
 *   🔒 Local-only data processing (no cloud storage)
     
 
+## 👀 App Preview
+
+<div style="
+  display: flex;
+  flex-wrap: nowrap;      /* Forces items to stay on one line */
+  overflow-x: scroll;     /* Always show horizontal scrollbar if needed */
+  overflow-y: hidden;     /* Prevents vertical scrolling */
+  width: 100%;            /* Uses full width of the parent */
+  gap: 10px;
+  padding-bottom: 10px;   /* Space for the scrollbar */
+">
+ Loading
+  <div style="flex: 0 0 auto;">
+    <img src="images/Loading.png" alt="Loading" style="height: 400px; width: auto; display: block;">
+  </div>
+Home Page
+  <div style="flex: 0 0 auto;">
+    <img src="images/Home.png" alt="Home" style="height: 400px; width: auto; display: block;">
+  </div>
+Menu
+  <div style="flex: 0 0 auto;">
+    <img src="images/Menu.png" alt="Menu" style="height: 400px; width: auto; display: block;">
+  </div>
+How To Use App
+  <div style="flex: 0 0 auto;">
+    <img src="images/How%20to%20use.png" alt="How to Use" style="height: 400px; width: auto; display: block;">
+  </div>
+Email
+  <div style="flex: 0 0 auto;">
+    <img src="images/Email.png" alt="Email" style="height: 400px; width: auto; display: block;">
+  </div>
+
+</div>
+
+
 * * *
 
 ## 📌 How to Set Up Thambi AI on Your PC
